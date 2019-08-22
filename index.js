@@ -9,8 +9,7 @@ start = async () => {
   const latestRelease = await fetchLatestRelease();
   const selectedAsset = await showLatestRelease(latestRelease);
   if (selectedAsset) {
-    const urlAssetDownload = await downloadReleaseAsset(selectedAsset);
-    console.log(urlAssetDownload);
+    const isFileDownloaded = await downloadReleaseAsset(selectedAsset);
   }
 }
 

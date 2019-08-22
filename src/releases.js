@@ -2,7 +2,7 @@ const readlineSync = require('readline-sync');
 const axios = require('axios');
 const ora = require('ora');
 
-const request = require('superagent');
+const request = require('request');
 const fs = require('fs');
 
 let releaseTagName;
@@ -17,7 +17,7 @@ fetchLatestRelease = async () => {
       spinner.succeed();
       return latestRelease;
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
     }
   }
 }
@@ -45,14 +45,16 @@ downloadReleaseAsset = async (selectedAsset) => {
     const downloadAssetUrl = `${process.env.SUBTITLE_EDIT_GIT_RELEASE_DOWNLOAD_URL}/${releaseTagName}/${selectedAsset}`;
 
     spinner = ora('Downloading asset...').start();
-    request
-      .get(downloadAssetUrl)
+    
+    request(downloadAssetUrl)
       .pipe(fs.createWriteStream(selectedAsset))
-      .on('finish', () => {
+      .on('close', () => {
         spinner.succeed();
+        return true;
       })
       .on('error', () => {
-        console.log(error);
+        console.log('Something went bad on downloading the asset');
+        return false;
       });
   } catch (error) {
     console.log(error);

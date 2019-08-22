@@ -4,6 +4,6 @@
     "dotenv": "^8.1.0",
     "ora": "^3.4.0",
     "readline-sync": "^1.4.10",
-    "superagent": "^5.1.0"
+    "request": "^2.88.0"
   }
 }
