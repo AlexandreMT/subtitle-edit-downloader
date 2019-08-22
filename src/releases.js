@@ -35,7 +35,7 @@ showLatestRelease = (latestRelease) => {
       }
       return false;
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
     }
   }
 }
@@ -47,12 +47,12 @@ downloadReleaseAsset = async (selectedAsset) => {
     spinner = ora('Downloading asset...').start();
     request
       .get(downloadAssetUrl)
-      .on('error', () => {
-        console.log(error);
-      })
       .pipe(fs.createWriteStream(selectedAsset))
       .on('finish', () => {
         spinner.succeed();
+      })
+      .on('error', () => {
+        console.log(error);
       });
   } catch (error) {
     console.log(error);
