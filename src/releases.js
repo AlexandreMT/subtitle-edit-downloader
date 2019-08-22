@@ -1,6 +1,7 @@
 const readlineSync = require('readline-sync');
 const axios = require('axios');
 const ora = require('ora');
+const urls = require('../enviroment').urls;
 
 const request = require('request');
 const fs = require('fs');
@@ -12,7 +13,7 @@ fetchLatestRelease = async () => {
   if (readlineSync.keyInYN('Fetch Subtitle Edit latest release?')) {
     try {
       spinner = ora('Fetching releases...').start();
-      const latestRelease = await axios.get(`${process.env.GITHUB_API_URL}/repos/${process.env.SUBTITLE_EDIT_GIT_REPO_URL}/releases/latest`);
+      const latestRelease = await axios.get(`${urls.GITHUB_API_URL}/repos/${urls.SUBTITLE_EDIT_GIT_REPO_URL}/releases/latest`);
       releaseTagName = latestRelease.data.tag_name;
       spinner.succeed();
       return latestRelease;
@@ -42,7 +43,7 @@ showLatestRelease = (latestRelease) => {
 
 downloadReleaseAsset = async (selectedAsset) => {
   try {
-    const downloadAssetUrl = `${process.env.SUBTITLE_EDIT_GIT_RELEASE_DOWNLOAD_URL}/${releaseTagName}/${selectedAsset}`;
+    const downloadAssetUrl = `${urls.SUBTITLE_EDIT_GIT_RELEASE_DOWNLOAD_URL}/${releaseTagName}/${selectedAsset}`;
 
     spinner = ora('Downloading asset...').start();
     
