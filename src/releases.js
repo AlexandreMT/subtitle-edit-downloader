@@ -1,0 +1,48 @@
+const readlineSync = require('readline-sync');
+const axios = require('axios');
+const ora = require('ora');
+
+let releaseTagName;
+let spinner;
+
+fetchLatestRelease = async () => {
+  if (readlineSync.keyInYN('Fetch Subtitle Edit latest release?')) {
+    try {
+      spinner = ora('Fetching releases...').start();
+      const latestRelease = await axios.get(`${process.env.GITHUB_API_URL}/repos/${process.env.SUBTITLE_EDIT_GIT_REPO_URL}/releases/latest`);
+      releaseTagName = latestRelease.data.tag_name
+      spinner.succeed()
+
+      return latestRelease;
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+}
+
+showLatestRelease = (latestRelease) => {
+  if (readlineSync.keyInYN(`Latest release is ${latestRelease.data.name} released at ${latestRelease.data.created_at}. Show assets?`)) {
+    let assets = [];
+    latestRelease.data.assets.forEach((asset) => {
+      assets.push(`${asset.name} - Updated at: ${asset.updated_at}`);
+    });
+    indexAsset = readlineSync.keyInSelect(assets, 'Which release?');
+    selectedAsset = assets[indexAsset].split(' - ')[0].trim();
+
+    return selectedAsset;
+  }
+}
+
+downloadReleaseAsset = async (selectedAsset) => {
+  try {
+    return `${process.env.SUBTITLE_EDIT_GIT_RELEASE_DOWNLOAD_URL}/${releaseTagName}/${selectedAsset}`;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+module.exports = {
+  fetchLatestRelease,
+  showLatestRelease,
+  downloadReleaseAsset
+};
