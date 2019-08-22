@@ -2,14 +2,18 @@ require('dotenv').config();
 const {
   fetchLatestRelease,
   showLatestRelease,
-  downloadReleaseAsset } = require('./releases');
+  downloadReleaseAsset
+} = require('./src/releases');
+
+let spinner;
 
 start = async () => {
   const latestRelease = await fetchLatestRelease();
   const selectedAsset = await showLatestRelease(latestRelease);
-  const urlAssetDownload = await downloadReleaseAsset(selectedAsset);
-
-  console.log(urlAssetDownload);
+  if (selectedAsset) {
+    const urlAssetDownload = await downloadReleaseAsset(selectedAsset);
+    console.log(urlAssetDownload);
+  }
 }
 
 start();
