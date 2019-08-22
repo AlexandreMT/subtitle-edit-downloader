@@ -47,11 +47,11 @@ downloadReleaseAsset = async (selectedAsset) => {
     spinner = ora('Downloading asset...').start();
     request
       .get(downloadAssetUrl)
-      .on('error', function () {
+      .on('error', () => {
         console.log(error);
       })
       .pipe(fs.createWriteStream(selectedAsset))
-      .on('finish', function () {
+      .on('finish', () => {
         spinner.succeed();
       });
   } catch (error) {
