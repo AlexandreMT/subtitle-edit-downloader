@@ -2,7 +2,11 @@ const readlineSync = require('readline-sync');
 const axios = require('axios');
 const ora = require('ora');
 
+const request = require('superagent');
+const fs = require('fs');
+
 let releaseTagName;
+let spinner;
 
 fetchLatestRelease = async () => {
   if (readlineSync.keyInYN('Fetch Subtitle Edit latest release?')) {
@@ -38,7 +42,18 @@ showLatestRelease = (latestRelease) => {
 
 downloadReleaseAsset = async (selectedAsset) => {
   try {
-    return `${process.env.SUBTITLE_EDIT_GIT_RELEASE_DOWNLOAD_URL}/${releaseTagName}/${selectedAsset}`;
+    const downloadAssetUrl = `${process.env.SUBTITLE_EDIT_GIT_RELEASE_DOWNLOAD_URL}/${releaseTagName}/${selectedAsset}`;
+
+    spinner = ora('Downloading asset...').start();
+    request
+      .get(downloadAssetUrl)
+      .on('error', function () {
+        console.log(error);
+      })
+      .pipe(fs.createWriteStream(selectedAsset))
+      .on('finish', function () {
+        spinner.succeed();
+      });
   } catch (error) {
     console.log(error);
   }
