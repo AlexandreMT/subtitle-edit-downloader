@@ -1,13 +1,12 @@
-require('dotenv').config();
 const {
   fetchLatestRelease,
-  showLatestRelease,
+  showLatestReleaseAndSelectAsset,
   downloadReleaseAsset
 } = require('./src/releases');
 
 start = async () => {
   const latestRelease = await fetchLatestRelease();
-  const selectedAsset = await showLatestRelease(latestRelease);
+  const selectedAsset = await showLatestReleaseAndSelectAsset(latestRelease);
   if (selectedAsset) {
     const isFileDownloaded = await downloadReleaseAsset(selectedAsset);
   }

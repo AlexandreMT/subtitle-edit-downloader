@@ -12,8 +12,9 @@ let spinner;
 fetchLatestRelease = async () => {
   if (readlineSync.keyInYN('Fetch Subtitle Edit latest release?')) {
     try {
-      spinner = ora('Fetching releases...').start();
-      const latestRelease = await axios.get(`${urls.GITHUB_API_URL}/repos/${urls.SUBTITLE_EDIT_GIT_REPO_URL}/releases/latest`);
+      spinner = ora('Fetching latest release...').start();
+      const latestReleaseUrl = `${urls.GITHUB_API_URL}/repos/${urls.SUBTITLE_EDIT_GIT_REPO_URL}/releases/latest`;
+      const latestRelease = await axios.get(latestReleaseUrl);
       releaseTagName = latestRelease.data.tag_name;
       spinner.succeed();
       return latestRelease;
@@ -23,13 +24,13 @@ fetchLatestRelease = async () => {
   }
 }
 
-showLatestRelease = (latestRelease) => {
-  if (readlineSync.keyInYN(`Latest release is ${latestRelease.data.name} released at ${latestRelease.data.created_at}. Show assets?`)) {
+showLatestReleaseAndSelectAsset = (latestRelease) => {
+  if (readlineSync.keyInYN(`Latest release is ${latestRelease.data.name} released at ${latestRelease.data.created_at}. List assets?`)) {
     try {
-      let assets = [];
-      latestRelease.data.assets.forEach((asset) => {
-        assets.push(`${asset.name} - Updated at: ${asset.updated_at}`);
+      const assets = latestRelease.data.assets.map((asset) => {
+        return `${asset.name} - Updated at: ${asset.updated_at}`;
       });
+
       indexAsset = readlineSync.keyInSelect(assets, 'Which release?');
       if (indexAsset > 0) {
         return selectedAsset = assets[indexAsset].split(' - ')[0].trim();
@@ -64,6 +65,6 @@ downloadReleaseAsset = async (selectedAsset) => {
 
 module.exports = {
   fetchLatestRelease,
-  showLatestRelease,
+  showLatestReleaseAndSelectAsset,
   downloadReleaseAsset
 };
