@@ -5,6 +5,7 @@ const urls = require('../enviroment').urls;
 
 const request = require('request');
 const fs = require('fs');
+const { _unzipper } = require('./unzipper');
 
 let releaseTagName;
 let spinner;
@@ -52,6 +53,7 @@ downloadReleaseAsset = async (selectedAsset) => {
       .pipe(fs.createWriteStream(selectedAsset))
       .on('close', () => {
         spinner.succeed();
+        _unzipper(selectedAsset);
         return true;
       })
       .on('error', () => {
