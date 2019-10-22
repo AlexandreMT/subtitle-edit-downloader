@@ -33,7 +33,7 @@ showLatestReleaseAndSelectAsset = (latestRelease) => {
       });
 
       indexAsset = readlineSync.keyInSelect(assets, 'Which release?');
-      if (indexAsset > 0) {
+      if (indexAsset > -1) {
         return selectedAsset = assets[indexAsset].split(' - ')[0].trim();
       }
       return false;
