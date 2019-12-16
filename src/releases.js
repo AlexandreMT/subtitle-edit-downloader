@@ -32,7 +32,7 @@ showLatestReleaseAndSelectAsset = (latestRelease) => {
         return `${asset.name} - Updated at: ${asset.updated_at}`;
       });
 
-      indexAsset = readlineSync.keyInSelect(assets, 'Which release?');
+      indexAsset = readlineSync.keyInSelect(assets, 'Which asset?');
       if (indexAsset > -1) {
         return selectedAsset = assets[indexAsset].split(' - ')[0].trim();
       }
